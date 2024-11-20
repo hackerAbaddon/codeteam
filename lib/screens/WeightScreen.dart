@@ -104,6 +104,10 @@ class WeightScreen extends StatelessWidget {
             // Next Button
             InkWell(
               onTap: () async {
+                // Determine the weight type
+                String weightType = isKg.value ? "KG" : "LBS";
+
+                // Calculate the final weight
                 double finalWeight = isKg.value ? weight.value : weight.value * 2.20462;
                 finalWeight = double.parse(finalWeight.toStringAsFixed(1));
 
@@ -113,10 +117,11 @@ class WeightScreen extends StatelessWidget {
                   gender: gender,
                   height: int.parse(height),
                   weight: finalWeight,
+                  weightType: weightType, // Pass the weight type
                 );
 
-                // After submitting the data, you can navigate to the next screen or show a success message
-                print('Final Weight: $finalWeight ${isKg.value ? 'Kg' : 'LBS'}');
+                // Debugging outputs
+                print('Final Weight: $finalWeight $weightType');
                 print('Gender: $gender');
                 print('Height: $height');
               },
@@ -137,6 +142,7 @@ class WeightScreen extends StatelessWidget {
                 ),
               ),
             ),
+
             SizedBox(height: 24),
           ],
         ),

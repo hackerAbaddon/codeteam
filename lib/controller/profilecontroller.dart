@@ -13,7 +13,12 @@ class ProfileController extends GetxController {
       "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVbWVzaCIsInJvbGVJZCI6MiwiZXhwIjoxNzU0NDU1MDY5LCJpYXQiOjE3MjI5MTkwNjl9.WwBZtiNMQAeerkqkQL2MQjNVyfAEn7gE8CzzU0XpCIE";
 
   // Modified submitProfile method to accept dynamic parameters
-  Future<void> submitProfile({required String gender, required int height, required double weight}) async {
+  Future<Map<String, dynamic>?> submitProfile({
+    required String gender,
+    required int height,
+    required double weight,
+    required String weightType,
+  }) async {
     final url = Uri.parse("$baseUrl/patient/patient_info?patientId=73");
 
     final headers = {
@@ -26,22 +31,41 @@ class ProfileController extends GetxController {
       "height": height,
       "heightType": "CM",
       "weight": weight,
-      "weightType": "KG",
+      "weightType": weightType, // Adding weightType dynamically
     });
 
     try {
       final response = await http.post(url, headers: headers, body: body);
 
       if (response.statusCode == 200) {
-        Get.snackbar('Success', 'Profile updated successfully',
-            snackPosition: SnackPosition.BOTTOM);
+        final data = jsonDecode(response.body);
+        print('Response Data: $data');
 
+        Get.snackbar(
+          'Success',
+          'Profile updated successfully',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+
+        return data; // Return the parsed response.
       } else {
-        Get.snackbar('Error', 'Failed to update profile',
-            snackPosition: SnackPosition.BOTTOM);
+        print('Error: ${response.body}');
+        Get.snackbar(
+          'Error',
+          'Failed to update profile: ${response.statusCode}',
+          snackPosition: SnackPosition.BOTTOM,
+        );
       }
     } catch (e) {
-      Get.snackbar('Error', e.toString(), snackPosition: SnackPosition.BOTTOM);
+      print('Exception: $e');
+      Get.snackbar(
+        'Error',
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
     }
+    return null; // Return null if there’s an error.
   }
+
+
 }
